@@ -1,12 +1,13 @@
 import { Controller, Get } from '@nestjs/common';
 import { GuestService } from './guest.service';
+import { GuestEntity } from './model/guest.entity';
 
-@Controller()
+@Controller('/guest')
 export class GuestController {
   constructor(private readonly guestService: GuestService) {}
 
   @Get()
-  getHello(): string[] {
+  async getHello(): Promise<GuestEntity[]> {
     return this.guestService.getGuests();
   }
 }
