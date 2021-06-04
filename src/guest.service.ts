@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { GuestNotFoundException } from './errors/guestNotFound.exception';
 import { GuestEntity } from './model/guest.entity';
 
 export interface GuestStats {
@@ -12,6 +13,11 @@ export interface GuestStats {
   percentConfirmed: number;
 }
 
+export interface GuestId {
+  id?: number;
+  name?: string;
+}
+
 @Injectable()
 export class GuestService {
   constructor(
@@ -20,7 +26,7 @@ export class GuestService {
   ) {}
 
   public async getGuests(): Promise<GuestEntity[]> {
-    return this.repo.find();
+    return this.repo.find({ order: { id: 'ASC' } });
   }
 
   public async getGuestStats(): Promise<GuestStats> {
@@ -42,6 +48,21 @@ export class GuestService {
       confirmed,
       percentConfirmed,
     };
+  }
+
+  public async confirmGuest(guestId: GuestId): Promise<GuestEntity> {
+    let guest: GuestEntity = null;
+    if (guestId.id) {
+      guest = await this.repo.findOne(guestId.id);
+    } else if (guestId.name) {
+      guest = await this.repo.findOne({ name: guestId.name });
+    }
+
+    if (!guest) {
+      throw new GuestNotFoundException();
+    }
+
+    return guest;
   }
 
   private async countGuests(): Promise<number> {

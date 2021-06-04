@@ -1,8 +1,8 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { GuestEntity } from './model/guest.entity';
-import { GuestService, GuestStats } from './guest.service';
+import { GuestService, GuestStats, GuestId } from './guest.service';
 
-@Controller('/guest')
+@Controller('/api/guest')
 export class GuestController {
   constructor(private readonly guestService: GuestService) {}
 
@@ -14,5 +14,10 @@ export class GuestController {
   @Get('/stats')
   async getStats(): Promise<GuestStats> {
     return this.guestService.getGuestStats();
+  }
+
+  @Post('/confirm')
+  async confirm(@Body() guest: GuestId): Promise<GuestEntity> {
+    return this.guestService.confirmGuest(guest);
   }
 }
