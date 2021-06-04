@@ -16,4 +16,7 @@ export class GuestEntity {
 
   @Column({ type: 'boolean' })
   is_confirmed: boolean;
+
+  @Column({ type: 'boolean' })
+  invite_delivered: boolean;
 }
