@@ -62,6 +62,25 @@ export class GuestService {
       throw new GuestNotFoundException();
     }
 
+    await this.repo.save({ id: guest.id, is_confirmed: true });
+
+    return guest;
+  }
+
+  public async deliverInvite(guestId: GuestId): Promise<GuestEntity> {
+    let guest: GuestEntity = null;
+    if (guestId.id) {
+      guest = await this.repo.findOne(guestId.id);
+    } else if (guestId.name) {
+      guest = await this.repo.findOne({ name: guestId.name });
+    }
+
+    if (!guest) {
+      throw new GuestNotFoundException();
+    }
+
+    await this.repo.save({ id: guest.id, invite_delivered: true });
+
     return guest;
   }
 

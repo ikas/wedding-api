@@ -20,4 +20,9 @@ export class GuestController {
   async confirm(@Body() guest: GuestId): Promise<GuestEntity> {
     return this.guestService.confirmGuest(guest);
   }
+
+  @Post('/deliver')
+  async deliverInvite(@Body() guest: GuestId): Promise<GuestEntity> {
+    return this.guestService.deliverInvite(guest);
+  }
 }
