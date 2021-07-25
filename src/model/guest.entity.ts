@@ -19,4 +19,7 @@ export class GuestEntity {
 
   @Column({ type: 'boolean' })
   invite_delivered: boolean;
+
+  @Column({ type: 'boolean' })
+  not_coming: boolean;
 }

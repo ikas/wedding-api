@@ -11,6 +11,8 @@ export interface GuestStats {
   percentDelivered: number;
   confirmed: number;
   percentConfirmed: number;
+  notComing: number;
+  percentNotComing: number;
 }
 
 export interface GuestId {
@@ -30,15 +32,17 @@ export class GuestService {
   }
 
   public async getGuestStats(): Promise<GuestStats> {
-    const [total, kids, delivered, confirmed] = await Promise.all([
+    const [total, kids, delivered, confirmed, notComing] = await Promise.all([
       this.countGuests(),
       this.countKids(),
       this.countDelivered(),
       this.countConfirmed(),
+      this.countNotComing(),
     ]);
 
-    const percentConfirmed = confirmed / total;
-    const percentDelivered = delivered / total;
+    const percentConfirmed = (confirmed / total) * 100;
+    const percentDelivered = (delivered / total) * 100;
+    const percentNotComing = (notComing / total) * 100;
 
     return {
       total,
@@ -47,6 +51,8 @@ export class GuestService {
       percentDelivered,
       confirmed,
       percentConfirmed,
+      notComing,
+      percentNotComing,
     };
   }
 
@@ -98,5 +104,9 @@ export class GuestService {
 
   private async countConfirmed(): Promise<number> {
     return this.repo.count({ where: { is_confirmed: true } });
+  }
+
+  private async countNotComing(): Promise<number> {
+    return this.repo.count({ where: { not_coming: true } });
   }
 }
